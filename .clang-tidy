@@ -1,0 +1,50 @@
+---
+Checks: >
+    bugprone-bool-pointer-implicit-conversion,
+    bugprone-branch-clone,
+    bugprone-copy-constructor-init,
+    bugprone-forwarding-reference-overload,
+    bugprone-inaccurate-erase,
+    bugprone-incorrect-roundings,
+    bugprone-incorrect-roundings,
+    bugprone-infinite-loop,
+    bugprone-integer-division,
+    bugprone-misplaced-widening-cast,
+    bugprone-sizeof-expression,
+    bugprone-suspicious-string-compare,
+    bugprone-too-small-loop-variable,
+    cppcoreguidelines-pro-type-member-init,
+    google-explicit-constructor,
+    misc-misplaced-const,
+    misc-redundant-expression,
+    misc-unused-parameters,
+    modernize-deprecated-headers,
+    modernize-loop-convert,
+    modernize-use-bool-literals,
+    modernize-use-equals-default,
+    modernize-use-equals-delete,
+    modernize-use-nullptr,
+    modernize-use-override,
+    modernize-use-trailing-return-type,
+    modernize-use-using,
+    readability-avoid-const-params-in-decls,
+    readability-const-return-type,
+    readability-container-size-empty,
+    readability-else-after-return,
+    readability-inconsistent-declaration-parameter-name,
+    readability-make-member-function-const,
+    readability-non-const-parameter,
+    readability-uppercase-literal-suffix,
+
+HeaderFilterRegex: '.*'
+FormatStyle: file
+CheckOptions:
+  - key:             cppcoreguidelines-pro-type-member-init.IgnoreArrays
+    value:           true
+  - key:             cppcoreguidelines-pro-type-member-init.UseAssignment
+    value:           true
+  - key:             modernize-loop-convert.MaxCopySize
+    value:           '4'
+  - key:             modernize-loop-convert.NamingStyle
+    value:           CamelCase
+...
