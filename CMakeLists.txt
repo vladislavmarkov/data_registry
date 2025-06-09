@@ -15,10 +15,7 @@ add_library(data::registry ALIAS data_registry)
 
 target_include_directories(data_registry INTERFACE include)
 
-find_package(
-    Python3
-    COMPONENTS Interpreter
-    REQUIRED)
+# find_package( Python3 COMPONENTS Interpreter REQUIRED)
 
 # set(GENERATED_DATA
 # ${CMAKE_CURRENT_SOURCE_DIR}/include/data/detail/for_each.inl)
@@ -28,6 +25,7 @@ find_package(
 # ${CMAKE_CURRENT_SOURCE_DIR}/make_for_each_N.py COMMENT "Running data
 # generator" VERBATIM)
 
-target_include_directories(data_registry INTERFACE ${CMAKE_CURRENT_BINARY_DIR})
-
-target_sources(data_registry PRIVATE ${GENERATED_DATA})
+# target_include_directories(data_registry INTERFACE
+# ${CMAKE_CURRENT_BINARY_DIR})
+#
+# target_sources(data_registry PRIVATE ${GENERATED_DATA})
