@@ -5,6 +5,7 @@
 
 #include <cstdint>
 
-using stored_data = reg::registry<_e(speed, uint32_t), _e(temp, float)>;
+_e(speed, uint16_t);
+_e(temp, float);
 
 #endif // STORED_DATA_H
