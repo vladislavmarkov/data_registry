@@ -4,6 +4,7 @@
 
 _store_e(speed, uint16_t);
 _store_e(temp, float);
+_store_e(location, location_t);
 
 using namespace std;
 

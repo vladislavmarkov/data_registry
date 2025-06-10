@@ -8,7 +8,7 @@ namespace reg
 {
 
 template<typename Tag>
-auto get()
+inline auto get()
 {
     return Tag::get();
 }

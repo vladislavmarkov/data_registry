@@ -19,4 +19,8 @@ TEST_CASE("demo")
     CHECK(reg::get<state>() == state_t::initialization);
     reg::set<state>(state_t::operation_cycle);
     CHECK(reg::get<state>() == state_t::operation_cycle);
+
+    CHECK(reg::get<location>() == location_t{});
+    CHECK(reg::get<location>().latitude == double{});
+    CHECK(reg::get<location>().longtitude == double{});
 }
