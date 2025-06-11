@@ -1,14 +1,39 @@
 #ifndef DATA_REGISTRY_H
 #define DATA_REGISTRY_H
 
-#include <type_traits>
+#include <tuple>
 #include <utility>
 
 namespace reg
 {
 
+namespace traits
+{
+
+template<typename T>
+struct function_traits;
+
+template<typename R, typename... Args>
+struct function_traits<R (*)(Args...)>
+{
+    using result_t       = R;
+    using argument_types = std::tuple<Args...>;
+
+    static constexpr std::size_t argsnum = sizeof...(Args);
+
+    template<std::size_t N>
+    struct argument
+    {
+        static_assert(N < argsnum, "Invalid argument index");
+        using type =
+            typename std::tuple_element_t<N, std::tuple<Args...>>::type;
+    };
+};
+
+} // namespace traits
+
 template<typename Tag>
-inline auto get()
+inline auto get() -> decltype(auto)
 {
     return Tag::get();
 }
@@ -21,32 +46,47 @@ void set(T&& value)
 
 } // namespace reg
 
-#define _e_static(tag, type)                                \
-    struct tag                                              \
+#define _e_static(Tag, Type)                                \
+    struct Tag                                              \
     {                                                       \
-        static inline auto get() -> type { return _value; } \
+        using type = Type;                                  \
+                                                            \
+        static inline auto get() -> Type { return _value; } \
                                                             \
     private:                                                \
-        static type _value;                                 \
+        static Type _value;                                 \
     }
 
-#define _e_reader(tag, type, reader)                          \
-    struct tag                                                \
-    {                                                         \
-        static inline auto get() -> type { return reader(); } \
+#define _e_reader(Tag, Type, Reader)                            \
+    struct Tag                                                  \
+    {                                                           \
+        using type = Type;                                      \
+                                                                \
+        static inline auto get() ->                             \
+            typename std::result_of<decltype (&Reader)()>::type \
+        {                                                       \
+            return Reader();                                    \
+        }                                                       \
     }
 
-#define _store_e(tag, type) \
-    type tag::_value {}
+#define _store_e(Tag, Type) \
+    Type Tag::_value {}
 
-#define _e_reader_writer(tag, type, reader, writer)           \
-    struct tag                                                \
-    {                                                         \
-        static inline auto get() -> type { return reader(); } \
-        static inline void set(type&& value)                  \
-        {                                                     \
-            return writer(std::forward<type>(value));         \
-        }                                                     \
+#define _e_reader_writer(Tag, Type, Reader, Writer)             \
+    struct Tag                                                  \
+    {                                                           \
+        using type = Type;                                      \
+                                                                \
+        static inline auto get() ->                             \
+            typename std::result_of<decltype (&Reader)()>::type \
+        {                                                       \
+            return Reader();                                    \
+        }                                                       \
+                                                                \
+        static inline void set(Type value)                      \
+        {                                                       \
+            return Writer(std::forward<Type>(value));           \
+        }                                                       \
     }
 
 #define _GET_LAST_ARG(tag, arg1, arg2, arg3, arg4, ...) arg4
