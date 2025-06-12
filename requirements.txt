@@ -43,6 +43,8 @@ Preliminary requirements:
      well-defined behavior for all data types and data specifiers, when the
      latter are used.
      TODO: define specific cases.
+     1. Non-fundamental statics must be read by const reference.
+     2. Fundamental types must be read by value.
 
 Rationale
 

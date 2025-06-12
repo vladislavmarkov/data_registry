@@ -46,27 +46,39 @@ void set(T&& value)
 
 } // namespace reg
 
+/*
+ * Fundamental statics are read by value.
+ * Everything else is read by const reference.
+ */
 #define _e_static(Tag, Type)                                \
     struct Tag                                              \
     {                                                       \
-        using type = Type;                                  \
+        using type = std::conditional_t<                    \
+            std::is_fundamental<Type>::value,               \
+            Type,                                           \
+            Type const&>;                                   \
                                                             \
-        static inline auto get() -> Type { return _value; } \
+        static inline auto get() -> type { return _value; } \
                                                             \
     private:                                                \
         static Type _value;                                 \
     }
 
-#define _e_reader(Tag, Type, Reader)                            \
-    struct Tag                                                  \
-    {                                                           \
-        using type = Type;                                      \
-                                                                \
-        static inline auto get() ->                             \
-            typename std::result_of<decltype (&Reader)()>::type \
-        {                                                       \
-            return Reader();                                    \
-        }                                                       \
+#define _e_reader(Tag, Type, Reader)                                       \
+    struct Tag                                                             \
+    {                                                                      \
+        static_assert(                                                     \
+            (std::is_const<Type>::value && std::is_reference<Type>::value) \
+                || !std::is_reference<Type>::value,                        \
+            "read accessor should return const reference or a value");     \
+                                                                           \
+        using type = Type;                                                 \
+                                                                           \
+        static inline auto get() ->                                        \
+            typename std::result_of<decltype (&Reader)()>::type            \
+        {                                                                  \
+            return Reader();                                               \
+        }                                                                  \
     }
 
 #define _store_e(Tag, Type) \

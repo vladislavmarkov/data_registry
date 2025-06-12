@@ -20,6 +20,11 @@ TEST_CASE("demo")
     reg::set<state>(state_t::operation_cycle);
     CHECK(reg::get<state>() == state_t::operation_cycle);
 
+    // non-fundamental statics are read by const reference
+    CHECK(
+        std::is_same<decltype(reg::get<location>()), location_t const&>::value
+        == true);
+
     CHECK(reg::get<location>() == location_t{});
     CHECK(reg::get<location>().latitude == double{});
     CHECK(reg::get<location>().longtitude == double{});
