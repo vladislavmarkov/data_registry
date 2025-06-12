@@ -1,0 +1,28 @@
+name: lint
+
+on:
+  pull_request:
+    paths:
+      - '**.h'
+      - '**.cpp'
+
+permissions:
+  contents: read
+
+jobs:
+  format_code:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938
+
+    - name: Install clang-format
+      run: |
+        wget https://apt.llvm.org/llvm.sh
+        sudo bash ./llvm.sh 19
+        sudo apt install clang-format-19
+
+    - name: run clang-format
+      run: |
+        find include src -name '*.h' -o -name '*.cpp' | \
+          xargs clang-format-19 -i -style=file -fallback-style=none
+        git diff --exit-code

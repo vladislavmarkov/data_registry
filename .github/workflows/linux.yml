@@ -1,0 +1,123 @@
+name: linux
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        cxx: [g++-14, clang++-19]
+        build_type: [Debug, Release]
+        std: [14]
+        shared: [""]
+        include:
+          - cxx: g++-14
+            build_type: Debug
+            std: 14
+            install: sudo apt install g++-14
+          - cxx: g++-14
+            build_type: Debug
+            std: 17
+            install: sudo apt install g++-14
+          - cxx: g++-14
+            build_type: Debug
+            std: 20
+            install: sudo apt install g++-14
+          - cxx: g++-14
+            build_type: Debug
+            std: 23
+            install: sudo apt install g++-14
+          - cxx: g++-14
+            build_type: Release
+            std: 14
+            install: sudo apt install g++-14
+          - cxx: g++-14
+            build_type: Release
+            std: 17
+            install: sudo apt install g++-14
+          - cxx: g++-14
+            build_type: Release
+            std: 20
+            install: sudo apt install g++-14
+          - cxx: g++-14
+            build_type: Release
+            std: 23
+            install: sudo apt install g++-14
+          - cxx: clang++-19
+            build_type: Debug
+            std: 14
+            install: sudo apt install clang-19
+          - cxx: clang++-19
+            build_type: Debug
+            std: 17
+            install: sudo apt install clang-19
+          - cxx: clang++-19
+            build_type: Debug
+            std: 20
+            install: sudo apt install clang-19
+          - cxx: clang++-19
+            build_type: Debug
+            std: 23
+            install: sudo apt install clang-19
+          - cxx: clang++-19
+            build_type: Release
+            std: 14
+            install: sudo apt install clang-19
+          - cxx: clang++-19
+            build_type: Release
+            std: 17
+            install: sudo apt install clang-19
+          - cxx: clang++-19
+            build_type: Release
+            std: 20
+            install: sudo apt install clang-19
+          - cxx: clang++-19
+            build_type: Release
+            std: 23
+            install: sudo apt install clang-19
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
+        fetch-depth: 0
+
+    - name: add ubuntu mirrors
+      run: |
+        mirrors=/etc/apt/mirrors.txt
+        printf 'http://azure.archive.ubuntu.com/ubuntu\tpriority:1\n' | \
+          sudo tee $mirrors
+        curl http://mirrors.ubuntu.com/mirrors.txt | sudo tee --append $mirrors
+        sudo sed -i \
+          "s~http://azure.archive.ubuntu.com/ubuntu/~mirror+file:$mirrors~" \
+          /etc/apt/sources.list
+
+    - name: create build environment
+      run: |
+          sudo apt update
+          ${{matrix.install}}
+          cmake -E make_directory ${{runner.workspace}}/build
+
+    - name: config
+      working-directory: ${{runner.workspace}}/build
+      env:
+        CXX: ${{matrix.cxx}}
+      run: |
+        cmake -DCMAKE_BUILD_TYPE=${{matrix.build_type}} \
+              -DCMAKE_CXX_STANDARD=${{matrix.std}} $GITHUB_WORKSPACE
+
+    - name: build
+      working-directory: ${{runner.workspace}}/build
+      run: |
+        threads=`nproc`
+        cmake --build . --config ${{matrix.build_type}} --parallel $threads
+
+    - name: test
+      working-directory: ${{runner.workspace}}/build
+      run: ctest --test-dir test -C ${{matrix.build_type}}
+      env:
+        CTEST_OUTPUT_ON_FAILURE: true
