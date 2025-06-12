@@ -1,17 +1,53 @@
-Goal - share data between components
-  1. ~~Lightweight~~ - everything is compile time. The only question is -
-     storing acessor functions - should be possible to store them in ROM.
-  2. ~~Lock Policy support~~ - can be solved with the context passing
-  3. No generator should be required - not a problem - it's not required as
-  is.
-  4. PODs should be supported (not only fundamentals).
-  5. ~~Specify who owns the data~~ - not needed, because we can solve
-     this by using read / write accessor functions
-  6. All data must be initialized prior to registry declaration
+The main goal of the data::registry API is to share data between components
+
+Preliminary requirements:
+
+  1. `Lightweight`-ness
+
+     Currently all helper data are stored in ROM (e.g. accessor functions are
+     part of the tag type). Later all callable types will be supported and
+     stored as a compile-time constants, bound to a tag.
+
+  2. Scalability
+
+     API should support massive amount of entries.
+     That should be possible already. Corresponding `load`-tests will be
+     implemented.
+
+  2. ~~Lock Policy support~~
+
+     Not needed - all readers and writers should support context data
+     optionally. Hence, locking primitives can be passed as a context -
+     corresponding tests will be implemented.
+
+  3. No generators should be required
+
+     Generators are not required.
+
+  4. Complex type support
+
+     API should support all data types, including non-trivial, functional
+     objects (callables), non-copyable objects.
+
+  5. It should be possible to specify in which Translation Unit the data is
+     "stored"
+
+     Statics are "stored" using `_store_e()` in a translation unit of user's
+     choice. Lifetime of a non-static entries is defined by user, that provides
+     read / write accessor functions - is this case API knows nothing about
+     where the data stored.
+
+  6. Type awarness and type certainty
+
+     API should be strongly type aware and have strict contracts and have
+     well-defined behavior for all data types and data specifiers, when the
+     latter are used.
+     TODO: define specific cases.
 
 Rationale
-Why does this thing need to exist?
-  1. It's possible to share only bits of data between components, but not
-  ENTIRE components.
-  2. It's a possible replacement for RTE but for opensource.
 
+  1. It's possible to share only bits of data between components, but not
+     ENTIRE components.
+
+  2. It's a possible replacement for RTE but for opensource, but with no
+     generators involved.
