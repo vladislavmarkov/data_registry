@@ -1,0 +1,18 @@
+[global]
+excludes = [
+  "**/3rdparty/*/**",
+  "*.toml",
+  "*.txt",
+  "*.yaml",
+  "*.yml",
+]
+
+[formatter.cpp]
+command = "clang-format"
+options = [ "--style=file", "-i" ]
+includes = [ "*.cpp", "*.h", "*.inl" ]
+
+[formatter.cmake]
+command = "cmake-format"
+options = [ "-i" ]
+includes = [ "**/CMakeLists.txt", "*.cmake" ]
