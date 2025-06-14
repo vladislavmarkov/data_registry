@@ -25,6 +25,7 @@ TEST_CASE("demo")
      */
 
     CHECK(reg::get<heartbeat>() == 1U);
+
     CHECK(reg::get<heartbeat>() == 2U);
     CHECK(reg::get<heartbeat>() == 3U);
 

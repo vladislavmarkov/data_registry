@@ -1,0 +1,29 @@
+name: formatting
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  format_code:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
+        fetch-depth: 0
+    - uses: actions-rust-lang/setup-rust-toolchain@v1
+    - name: install treefmt
+      run: cargo install treefmt --locked
+
+    - name: install cmake-format (cmakelang)
+      run: |
+        pip install --quiet cmakelang
+        wget https://apt.llvm.org/llvm.sh
+        sudo bash ./llvm.sh 19
+        sudo apt install clang-format-19
+
+    - name: run treefmt in check mode
+      working-directory: ${{runner.workspace}}
+      run: treefmt --fail-on-change --config-file ".treefmt.toml"
