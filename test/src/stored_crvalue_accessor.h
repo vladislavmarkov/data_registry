@@ -28,4 +28,16 @@ auto get_crpod() -> pod_t const&;
 _e(crfundamental_t, uint32_t, get_crfundamental);
 _e(crpod_t, pod_t, get_crpod);
 
+// register all fundamental statics
+_e(signed_char_t, signed char);
+_e(unsigned_char_t, unsigned char);
+_e(short_int_t, short int);
+_e(unsigned_short_int_t, unsigned short int);
+_e(int_t, int);
+_e(unsigned_int_t, unsigned int);
+_e(long_int_t, long int);
+_e(unsigned_long_int_t, unsigned long int);
+_e(long_long_int_t, long long int);
+_e(unsigned_long_long_int_t, unsigned long long int);
+
 #endif // STORED_CRVALUE_ACCESSOR_H
