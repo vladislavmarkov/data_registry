@@ -1,5 +1,5 @@
-#ifndef DATA_REGISTRY_H
-#define DATA_REGISTRY_H
+#ifndef REG_DATA_REGISTRY_H
+#define REG_DATA_REGISTRY_H
 
 #include <tuple>
 #include <utility>
@@ -99,4 +99,4 @@ void set(T&& value)
 
 #define _e(...) _e_choose(__VA_ARGS__)(__VA_ARGS__)
 
-#endif // DATA_REGISTRY_H
+#endif // REG_DATA_REGISTRY_H

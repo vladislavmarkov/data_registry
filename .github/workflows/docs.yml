@@ -26,7 +26,7 @@ jobs:
 
       - name: Build data_registry_doc
         run: |
-          mkdocs build --strict -d data_registry_doc
+          mkdocs build -f .mkdocs.yml --strict -d data_registry_doc
 
       - name: upload artifact for pages
         uses: actions/upload-pages-artifact@v3

@@ -5,6 +5,11 @@ excludes = [
   "*.txt",
   "*.yaml",
   "*.yml",
+  ".clang-format",
+  ".clang-tidy",
+  ".clangd",
+  ".cmake-format",
+  ".gitignore",
 ]
 
 [formatter.cpp]
