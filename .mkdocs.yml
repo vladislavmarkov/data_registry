@@ -1,26 +1,31 @@
-site_name: DATA::REGISTRY documentation
+site_name: data::registry documentation
+
 repo_url: https://github.com/vladislavmarkov/data_registry
+
+docs_dir: docs
+
 theme:
   name: mkdocs
   color_mode: auto
+  highlightjs: true
+  hljs_style: github
+  hljs_style_dark: github-dark
   user_color_mode_toggle: true
+  nav_style: dark
 
 plugins:
   - search
   - mike
+  - mkdocstrings:
+      default_handler: cxx
 
 nav:
   - Home: index.md
 
-extra_javascript:
-  - https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/highlight.min.js
-  - data_registry.js
-
-extra_css:
-  - https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/styles/default.min.css
-  - data_registry.css
-
 markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
   - pymdownx.highlight:
       use_pygments: false
       anchor_linenums: true
@@ -28,11 +33,6 @@ markdown_extensions:
       pygments_lang_class: true
   - pymdownx.inlinehilite
   - pymdownx.snippets
-
-plugins:
-  - search
-  - mkdocstrings:
-      default_handler: cxx
 
 extra:
   version:
