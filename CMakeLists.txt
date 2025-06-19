@@ -7,8 +7,14 @@ project(
     VERSION 0.0.1
     LANGUAGES CXX)
 
+option(BUILD_EXAMPLES "build example programs" OFF)
+
 add_subdirectory(3rdparty)
-add_subdirectory(test)
+add_subdirectory(tests)
+
+if (BUILD_EXAMPLES)
+    add_subdirectory(examples)
+endif ()
 
 add_library(data_registry INTERFACE)
 add_library(data::registry ALIAS data_registry)

@@ -61,6 +61,6 @@ jobs:
 
     - name: test
       working-directory: ${{runner.workspace}}/build
-      run: ctest --test-dir test -C ${{matrix.build_type}}
+      run: ctest --test-dir tests -C ${{matrix.build_type}}
       env:
         CTEST_OUTPUT_ON_FAILURE: true

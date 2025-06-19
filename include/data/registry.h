@@ -47,21 +47,23 @@ void set(T&& value)
 } // namespace reg
 
 /*
- * Fundamental statics are read by value.
- * Everything else is read by const reference.
+ * 1. Fundamental statics are read by value.
+ * 2. Everything else is read by const reference.
+ * 3. Statics are r/w, since there're no other ways to modify them.
  */
-#define _e_static(Tag, Type)                                \
-    struct Tag                                              \
-    {                                                       \
-        using type = std::conditional_t<                    \
-            std::is_fundamental<Type>::value,               \
-            Type,                                           \
-            Type const&>;                                   \
-                                                            \
-        static inline auto get() -> type { return _value; } \
-                                                            \
-    private:                                                \
-        static Type _value;                                 \
+#define _e_static(Tag, Type)                                   \
+    struct Tag                                                 \
+    {                                                          \
+        using type = std::conditional_t<                       \
+            std::is_fundamental<Type>::value,                  \
+            Type,                                              \
+            Type const&>;                                      \
+                                                               \
+        static inline auto get() -> type { return _value; }    \
+        static inline void set(type value) { _value = value; } \
+                                                               \
+    private:                                                   \
+        static Type _value;                                    \
     }
 
 #define _e_reader(Tag, Type, Reader)                                        \
