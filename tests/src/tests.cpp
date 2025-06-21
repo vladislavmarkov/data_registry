@@ -7,8 +7,6 @@ DOCTEST_MAKE_STD_HEADERS_CLEAN_FROM_WARNINGS_ON_WALL_BEGIN
 #include <type_traits>
 DOCTEST_MAKE_STD_HEADERS_CLEAN_FROM_WARNINGS_ON_WALL_END
 
-// #include "stored_crvalue_accessor.h"
-
 using namespace std;
 
 auto get_crfundamental() -> uint32_t const&;
@@ -74,7 +72,7 @@ auto get_crpod() -> pod_t const&
  *
  * All reg::get-s have to have the same type as a reader itself.
  */
-TEST_CASE("reader_same_as_get_return_type")
+TEST_CASE("reader must be same as get return type")
 {
     using fundamental_result_t = decltype(get_crfundamental());
 
@@ -84,13 +82,16 @@ TEST_CASE("reader_same_as_get_return_type")
 
     CHECK(is_same<pod_result_type, pod_t const&>::value == true);
 
-    // reference is constant...
-    auto const& fundamental = reg::get<crfundamental_t>();
-    CHECK(fundamental == 1U);
+    // reference is constant, otherwise it won't pass the test
+    auto& fundamental = reg::get<crfundamental_t>();
+    auto fundamentalv = reg::get<crfundamental_t>();
+    CHECK(is_same<decltype(fundamental), uint32_t const&>::value == true);
+    CHECK(is_same<decltype(fundamentalv), uint32_t>::value == true);
+    CHECK(fundamental == 2U);
 
     // ... but can be changed from somewhere else
     (void)reg::get<crfundamental_t>();
-    CHECK(fundamental == 2U);
+    CHECK(fundamental == 3U);
 
     auto const& pod = reg::get<crpod_t>();
     CHECK(pod == pod_t{42, 'z', 3.14});
@@ -102,7 +103,7 @@ TEST_CASE("reader_same_as_get_return_type")
  * Return value must always be the same as the return value of the reader.
  */
 TEST_CASE_TEMPLATE(
-    "reader_return_type_constistency", Tag, crfundamental_t, crpod_t)
+    "reader return type constistency", Tag, crfundamental_t, crpod_t)
 {
     using cr_get_result_t = decltype(reg::get<Tag>());
 
@@ -135,4 +136,39 @@ TEST_CASE_TEMPLATE(
 
     // statics are default-initialized
     CHECK(reg::get<Tag>() == typename Tag::type{});
+}
+
+static char g_z{};
+
+auto get_char_ctx(int) -> char { return g_z; }
+
+void set_char_ctx(char c, int) { g_z = c; }
+
+_e(reader_ctx, char, get_char_ctx);
+
+TEST_CASE("r/o + ctx")
+{
+    auto c = reg::get<reader_ctx>(42);
+    CHECK(c == char{});
+}
+
+_e(rw_ctx, char, get_char_ctx, set_char_ctx);
+
+TEST_CASE("r/w + ctx")
+{
+    CHECK(reg::get<rw_ctx>(42) == char{});
+    reg::set<rw_ctx>('z', 42);
+}
+
+static auto lmbd_get_char_ctx = [](int) -> char { return g_z; };
+static auto lmbd_set_char_ctx = [](char c, int) { g_z = c; };
+
+_e(rw_ctx_callable, char, lmbd_get_char_ctx, lmbd_set_char_ctx);
+
+TEST_CASE("r/w + ctx | callable")
+{
+    (void)lmbd_set_char_ctx;
+    CHECK(reg::get<rw_ctx_callable>(42) == char{});
+    reg::set<rw_ctx_callable>('z', 42);
+    CHECK(reg::get<rw_ctx_callable>(42) == 'z');
 }
