@@ -70,7 +70,7 @@ auto get_crpod() -> pod_t const&
 /**
  * Requirement:
  *
- * All reg::get-s have to have the same type as a reader itself.
+ * All reg::get-s must have the same type as the reader itself.
  */
 TEST_CASE("reader must be same as get return type")
 {
@@ -82,16 +82,23 @@ TEST_CASE("reader must be same as get return type")
 
     CHECK(is_same<pod_result_type, pod_t const&>::value == true);
 
-    // reference is constant, otherwise it won't pass the test
+    // is reference, otherwise it won't pass the test
     auto& fundamental = reg::get<crfundamental_t>();
-    auto fundamentalv = reg::get<crfundamental_t>();
     CHECK(is_same<decltype(fundamental), uint32_t const&>::value == true);
+    CHECK(fundamental == 1U);
+
+    // returned by value - won't be modified by subsequent calls to
+    // reg::get(), even if user-provided reader does any modifications
+    auto fundamentalv = reg::get<crfundamental_t>();
     CHECK(is_same<decltype(fundamentalv), uint32_t>::value == true);
-    CHECK(fundamental == 2U);
+    CHECK(fundamentalv == 2U);
 
     // ... but can be changed from somewhere else
     (void)reg::get<crfundamental_t>();
     CHECK(fundamental == 3U);
+
+    // value is not modified
+    CHECK(fundamentalv == 2U);
 
     auto const& pod = reg::get<crpod_t>();
     CHECK(pod == pod_t{42, 'z', 3.14});
@@ -103,7 +110,7 @@ TEST_CASE("reader must be same as get return type")
  * Return value must always be the same as the return value of the reader.
  */
 TEST_CASE_TEMPLATE(
-    "reader return type constistency", Tag, crfundamental_t, crpod_t)
+    "reader return type constistency ", Tag, crfundamental_t, crpod_t)
 {
     using cr_get_result_t = decltype(reg::get<Tag>());
 
@@ -116,7 +123,7 @@ TEST_CASE_TEMPLATE(
  * The reg::get-s for fundamental statics are returned by value
  */
 TEST_CASE_TEMPLATE(
-    "fundamental_statics_are_returned_by_value",
+    "fundamental statics are returned by value ",
     Tag,
     signed_char_t,
     unsigned_char_t,
@@ -146,6 +153,12 @@ void set_char_ctx(char c, int) { g_z = c; }
 
 _e(reader_ctx, char, get_char_ctx);
 
+/*
+ * Requirement:
+ *
+ * Both reg::get() and reg::set() should accept context data if required by
+ * corresponding reader/writers are accepting it.
+ */
 TEST_CASE("r/o + ctx")
 {
     auto c = reg::get<reader_ctx>(42);
@@ -160,6 +173,12 @@ TEST_CASE("r/w + ctx")
     reg::set<rw_ctx>('z', 42);
 }
 
+/*
+ * Requirement:
+ *
+ * API should support passing both raw functions and callable objects as
+ * readers/writers.
+ */
 static auto lmbd_get_char_ctx = [](int) -> char { return g_z; };
 static auto lmbd_set_char_ctx = [](char c, int) { g_z = c; };
 
