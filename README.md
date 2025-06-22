@@ -4,8 +4,53 @@
 [![formatting](https://github.com/vladislavmarkov/data_registry/actions/workflows/formatting.yml/badge.svg)](https://github.com/vladislavmarkov/data_registry/actions/workflows/formatting.yml)
 [![documentation](https://github.com/vladislavmarkov/data_registry/actions/workflows/docs.yml/badge.svg)](https://github.com/vladislavmarkov/data_registry/actions/workflows/docs.yml)
 
-`data::registry` is a lightweight, header-only C++ library that lets users
+**data::registry** is a lightweight, header-only C++(>=14) library that lets users
 obtain *read-only* or *read-write* access to data shared across translation
 units, or to data returned by user-defined functions.
 
+The core idea is to define data *entries* identified by a *tag*, a data type,
+and, optionally, *read* and *write* accessors.
+
 More detailed documentation is here: [Documentation](https://vladislavmarkov.github.io/data_registry)
+
+## Quick Start
+
+Step 1 - Declare entries
+
+```cpp
+// static variable as an entry
+_e(tag, type);
+
+// readonly entry accessible via reader
+_e(tag, type, reader);
+
+// read-write entry accessible via reader and writer
+_e(tag, type, reader, writer); 
+```
+
+Step 2 - Access entries via `reg::get()` and `reg::set()` by tag
+
+```cpp
+// access function might have 0 to N number of parameters (contexts)
+auto value = reg::get<type>(ctx1, ..., ctxN);
+reg::set<type>(new_value, ctx1, ..., ctxN);
+```
+
+## Features
+
+- **No exceptions**  
+ The **data::registry** API never throws exceptions
+ internally; any exceptions can originate only from user-provided functions.
+
+- **Context data support**  
+ When needed, callers may pass context objects to
+ *reg::get()* or *reg::set()*, provided the corresponding user-provided readers
+ or writers accept those contexts as parameters.
+
+- **Compatibility**  
+ Supported and tested on C++14 through C++23.
+
+- **No generators**
+
+- **No lookup tables**  
+ Data is accessed at *O(1)*.
