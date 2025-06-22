@@ -1,12 +1,10 @@
 The main goal of the data::registry API is to share data between components
+or share "environment" variables that are accessible only via special
+functionality.
 
-Preliminary requirements:
+Requirements
 
   1. `Lightweight`-ness
-
-     Currently all helper data are stored in ROM (e.g. accessor functions are
-     part of the tag type). Later all callable types will be supported and
-     stored as a compile-time constants, bound to a tag.
 
   2. Scalability
 
@@ -14,37 +12,29 @@ Preliminary requirements:
      That should be possible already. Corresponding `load`-tests will be
      implemented.
 
-  2. ~~Lock Policy support~~
+  3. Context data support
 
-     Not needed - all readers and writers should support context data
-     optionally. Hence, locking primitives can be passed as a context -
-     corresponding tests will be implemented.
+     Both reg::get() and reg::set() should accept context data if required by
+     corresponding reader/writers are accepting it.
 
-  3. No generators should be required
+  4. No generators
 
-     Generators are not required.
-
-  4. Complex type support
+  5. Complex type support
 
      API should support all data types, including non-trivial, functional
      objects (callables), non-copyable objects.
 
-  5. It should be possible to specify in which Translation Unit the data is
-     "stored"
+  6. It should be possible to specify in which TU the data is "stored"
 
      Statics are "stored" using `_store_e()` in a translation unit of user's
      choice. Lifetime of a non-static entries is defined by user, that provides
      read / write accessor functions - is this case API knows nothing about
      where the data stored.
 
-  6. Type awarness and type certainty
+  7. Type awarness and type certainty
 
-     API should be strongly type aware and have strict contracts and have
-     well-defined behavior for all data types and data specifiers, when the
-     latter are used.
-     TODO: define specific cases.
-     1. Non-fundamental statics must be read by const reference.
-     2. Fundamental types must be read by value.
+     6.1. Non-fundamental statics must be read by const reference
+     6.2. Fundamental statics must be read by value
 
 Rationale
 
