@@ -174,6 +174,10 @@ using modify_type
 
 #define reg_store_e(...) IMPL_REG_STORE_E_CHOOSE(__VA_ARGS__)(__VA_ARGS__)
 
+/*
+ * Having this many TOO_MANY_ARGUMENTS placeholders allows to pass up to 14
+ * constructor arguments to reg_store_e().
+ */
 #define IMPL_REG_E_CHOOSE(...) \
     IMPL_REG_SWITCH_ARG(       \
         __VA_ARGS__,           \
