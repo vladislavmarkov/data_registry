@@ -18,17 +18,17 @@ struct vec2d_t
 
 } // namespace geo
 
-_e(number, unsigned short);
-_e(text, std::string);
-_e(location, geo::vec2d_t);
+reg_e(number, unsigned short);
+reg_e(text, std::string);
+reg_e(location, geo::vec2d_t);
 
 /*
  * Storing statics in the same translation unit is not necessary
  * but it's done here for sake of having short example.
  */
-_store_e(number, unsigned short);
-_store_e(text, std::string);
-_store_e(location, geo::vec2d_t);
+reg_store_e(number, unsigned short);
+reg_store_e(text, std::string);
+reg_store_e(location, geo::vec2d_t);
 
 auto main() -> int
 {

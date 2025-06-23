@@ -26,9 +26,9 @@ void set(T&& value, Args&&... args)
  *
  * Core API:
  *
- *  1. _e(tag,   type)                 - static
- *  2. _e(tag,   type, reader)         - r/o
- *  3. _e(tag,   type, reader, writer) - r/w
+ *  1. reg_e(tag,   type)                 - static
+ *  2. reg_e(tag,   type, reader)         - r/o
+ *  3. reg_e(tag,   type, reader, writer) - r/w
  *
  *  Additional requirements:
  *
@@ -50,7 +50,7 @@ using modify_type
 
 } // namespace reg
 
-#define _e_s(Tag, Type)                                                \
+#define IMPL_REG_E_S(Tag, Type)                                                \
     struct Tag                                                         \
     {                                                                  \
         using type = Type;                                             \
@@ -69,7 +69,7 @@ using modify_type
         static type _value;                                            \
     }
 
-#define _e_r(Tag, Type, Reader)                                             \
+#define IMPL_REG_E_R(Tag, Type, Reader)                                             \
     struct Tag                                                              \
     {                                                                       \
         using type = Type;                                                  \
@@ -86,7 +86,7 @@ using modify_type
         }                                                                   \
     }
 
-#define _e_rw(Tag, Type, Reader, Writer)                                    \
+#define IMPL_REG_E_RW(Tag, Type, Reader, Writer)                                    \
     struct Tag                                                              \
     {                                                                       \
         using type = Type;                                                  \
@@ -105,13 +105,13 @@ using modify_type
     }
 
 // store static
-#define _store_e(Tag, Type) \
+#define reg_store_e(Tag, Type) \
     Tag::type Tag::_value {}
 
-#define _GET_LAST_ARG(tag, arg1, arg2, arg3, arg4, ...) arg4
+#define IMPL_REG_SWITCH_ARG(tag, arg1, arg2, arg3, arg4, ...) arg4
 
-#define _e_choose(...) _GET_LAST_ARG(__VA_ARGS__, _e_rw, _e_r, _e_s, )
+#define IMPL_REG_CHOOSE(...) IMPL_REG_SWITCH_ARG(__VA_ARGS__, IMPL_REG_E_RW, IMPL_REG_E_R, IMPL_REG_E_S, )
 
-#define _e(...) _e_choose(__VA_ARGS__)(__VA_ARGS__)
+#define reg_e(...) IMPL_REG_CHOOSE(__VA_ARGS__)(__VA_ARGS__)
 
 #endif // REG_DATA_REGISTRY_H

@@ -28,32 +28,32 @@ static_assert(std::is_trivial<pod_t>::value, "should be POD");
 auto get_crpod() -> pod_t const&;
 
 // register entries
-_e(crfundamental_t, uint32_t, get_crfundamental);
-_e(crpod_t, pod_t, get_crpod);
+reg_e(crfundamental_t, uint32_t, get_crfundamental);
+reg_e(crpod_t, pod_t, get_crpod);
 
 // register all fundamental statics
-_e(signed_char_t, signed char);
-_e(unsigned_char_t, unsigned char);
-_e(short_int_t, short int);
-_e(unsigned_short_int_t, unsigned short int);
-_e(int_t, int);
-_e(unsigned_int_t, unsigned int);
-_e(long_int_t, long int);
-_e(unsigned_long_int_t, unsigned long int);
-_e(long_long_int_t, long long int);
-_e(unsigned_long_long_int_t, unsigned long long int);
+reg_e(signed_char_t, signed char);
+reg_e(unsigned_char_t, unsigned char);
+reg_e(short_int_t, short int);
+reg_e(unsigned_short_int_t, unsigned short int);
+reg_e(int_t, int);
+reg_e(unsigned_int_t, unsigned int);
+reg_e(long_int_t, long int);
+reg_e(unsigned_long_int_t, unsigned long int);
+reg_e(long_long_int_t, long long int);
+reg_e(unsigned_long_long_int_t, unsigned long long int);
 
 // storing them
-_store_e(signed_char_t, signed char);
-_store_e(unsigned_char_t, unsigned char);
-_store_e(short_int_t, short int);
-_store_e(unsigned_short_int_t, unsigned short int);
-_store_e(int_t, int);
-_store_e(unsigned_int_t, unsigned int);
-_store_e(long_int_t, long int);
-_store_e(unsigned_long_int_t, unsigned long int);
-_store_e(long_long_int_t, long long int);
-_store_e(unsigned_long_long_int_t, unsigned long long int);
+reg_store_e(signed_char_t, signed char);
+reg_store_e(unsigned_char_t, unsigned char);
+reg_store_e(short_int_t, short int);
+reg_store_e(unsigned_short_int_t, unsigned short int);
+reg_store_e(int_t, int);
+reg_store_e(unsigned_int_t, unsigned int);
+reg_store_e(long_int_t, long int);
+reg_store_e(unsigned_long_int_t, unsigned long int);
+reg_store_e(long_long_int_t, long long int);
+reg_store_e(unsigned_long_long_int_t, unsigned long long int);
 
 auto get_crfundamental() -> uint32_t const&
 {
@@ -151,7 +151,7 @@ auto get_char_ctx(int) -> char { return g_z; }
 
 void set_char_ctx(char c, int) { g_z = c; }
 
-_e(reader_ctx, char, get_char_ctx);
+reg_e(reader_ctx, char, get_char_ctx);
 
 /*
  * Requirement:
@@ -165,7 +165,7 @@ TEST_CASE("r/o + ctx")
     CHECK(c == char{});
 }
 
-_e(rw_ctx, char, get_char_ctx, set_char_ctx);
+reg_e(rw_ctx, char, get_char_ctx, set_char_ctx);
 
 TEST_CASE("r/w + ctx")
 {
@@ -182,7 +182,7 @@ TEST_CASE("r/w + ctx")
 static auto lmbd_get_char_ctx = [](int) -> char { return g_z; };
 static auto lmbd_set_char_ctx = [](char c, int) { g_z = c; };
 
-_e(rw_ctx_callable, char, lmbd_get_char_ctx, lmbd_set_char_ctx);
+reg_e(rw_ctx_callable, char, lmbd_get_char_ctx, lmbd_set_char_ctx);
 
 TEST_CASE("r/w + ctx | callable")
 {
