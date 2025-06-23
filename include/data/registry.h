@@ -26,9 +26,11 @@ void set(T&& value, Args&&... args)
  *
  * Core API:
  *
- *  1. reg_e(tag,   type)                 - static
- *  2. reg_e(tag,   type, reader)         - r/o
- *  3. reg_e(tag,   type, reader, writer) - r/w
+ *  1. reg_e(tag, type)                    - static
+ *  2. reg_e(tag, type, reader)            - r/o
+ *  3. reg_e(tag, type, reader, writer)    - r/w
+ *  4. reg_store_e(tag, ctrarg1...ctrargN) - storing statics (pass arguments to
+ *     ctr if required)
  *
  *  Additional requirements:
  *
@@ -53,6 +55,13 @@ using modify_type
 #define IMPL_REG_E_S(Tag, Type)                                        \
     struct Tag                                                         \
     {                                                                  \
+        Tag()                              = delete;                   \
+        Tag(Tag const&)                    = delete;                   \
+        auto operator=(Tag const&) -> Tag& = delete;                   \
+        Tag(Tag&&)                         = delete;                   \
+        auto operator=(Tag&&) -> Tag&      = delete;                   \
+        ~Tag()                             = delete;                   \
+                                                                       \
         using type = Type;                                             \
                                                                        \
         static inline auto get() -> ::reg::detail::modify_type<type>   \
@@ -72,6 +81,13 @@ using modify_type
 #define IMPL_REG_E_R(Tag, Type, Reader)                                     \
     struct Tag                                                              \
     {                                                                       \
+        Tag()                              = delete;                        \
+        Tag(Tag const&)                    = delete;                        \
+        auto operator=(Tag const&) -> Tag& = delete;                        \
+        Tag(Tag&&)                         = delete;                        \
+        auto operator=(Tag&&) -> Tag&      = delete;                        \
+        ~Tag()                             = delete;                        \
+                                                                            \
         using type = Type;                                                  \
                                                                             \
         static_assert(                                                      \
@@ -89,6 +105,13 @@ using modify_type
 #define IMPL_REG_E_RW(Tag, Type, Reader, Writer)                            \
     struct Tag                                                              \
     {                                                                       \
+        Tag()                              = delete;                        \
+        Tag(Tag const&)                    = delete;                        \
+        auto operator=(Tag const&) -> Tag& = delete;                        \
+        Tag(Tag&&)                         = delete;                        \
+        auto operator=(Tag&&) -> Tag&      = delete;                        \
+        ~Tag()                             = delete;                        \
+                                                                            \
         using type = Type;                                                  \
                                                                             \
         template<typename... Args>                                          \
