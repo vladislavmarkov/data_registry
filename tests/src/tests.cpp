@@ -201,18 +201,22 @@ TEST_CASE("r/w + ctx | callable")
 class non_default_constructible
 {
     int _i;
+    char _c;
+    float _f;
 
 public:
-    explicit non_default_constructible(int init_value) : _i(init_value) {}
+    explicit non_default_constructible(int init_int, char init_char, float init_float) : _i(init_int), _c(init_char), _f(init_float) {}
 
-    auto get() const -> int { return _i; }
+    auto get_int() const -> int { return _i; }
+    auto get_char() const -> char { return _c; }
+    auto get_float() const -> float { return _f; }
 };
 
 reg_e(initialization_required, non_default_constructible);
 
-reg_store_e(initialization_required, 42);
+reg_store_e(initialization_required, 42, 'z', 36.6F);
 
 TEST_CASE("reg_store_e() with initialization value")
 {
-    CHECK(reg::get<initialization_required>().get() == 42);
+    CHECK(reg::get<initialization_required>().get_int() == 42);
 }

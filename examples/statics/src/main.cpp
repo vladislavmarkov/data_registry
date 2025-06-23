@@ -10,10 +10,20 @@
 namespace geo
 {
 
-struct vec2d_t
+class vec2d_t
 {
-    int x;
-    int y;
+    int _x;
+    int _y;
+
+public:
+    vec2d_t(int arg_x, int arg_y) : _x(arg_x), _y(arg_y)
+    {
+        std::cout << "vec2d_t::vec2d_t(" << _x << ", " << _y << ")\n";
+    }
+
+    auto get_x() const -> int { return _x; }
+
+    auto get_y() const -> int { return _y; }
 };
 
 } // namespace geo
@@ -28,7 +38,7 @@ reg_e(location, geo::vec2d_t);
  */
 reg_store_e(number);
 reg_store_e(text);
-reg_store_e(location);
+reg_store_e(location, 1, 2);
 
 auto main() -> int
 {
@@ -39,8 +49,8 @@ auto main() -> int
     using std::cout;
     cout << "number: " << reg::get<number>() << '\n';
     cout << "  text: " << reg::get<text>() << '\n';
-    cout << " vec2d: { " << reg::get<location>().x << ", "
-         << reg::get<location>().y << " }" << '\n';
+    cout << " vec2d: { " << reg::get<location>().get_x() << ", "
+         << reg::get<location>().get_y() << " }" << '\n';
 
     return 0;
 }

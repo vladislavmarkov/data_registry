@@ -104,22 +104,16 @@ using modify_type
         }                                                                   \
     }
 
-// store static
-#define IMPL_STORE_E(Tag) \
-    Tag::type Tag::_value {}
-
-#define IMPL_STORE_E_I(Tag, InitValue) \
-    Tag::type Tag::_value { InitValue }
-
 #define IMPL_REG_SWITCH_ARG(Tag, Arg1, Arg2, Arg3, Arg4, ...) Arg4
 
 #define IMPL_REG_STORE_E_CHOOSE(...) \
-        IMPL_REG_SWITCH_ARG(__VA_ARGS__, DUMMY, DUMMY, IMPL_STORE_E_I, IMPL_STORE_E, )
+    IMPL_REG_SWITCH_ARG(             \
+        __VA_ARGS__, IMPL_STORE_E_I, IMPL_STORE_E, )
 
-#define reg_store_e(...) IMPL_REG_STORE_E_CHOOSE(__VA_ARGS__)(__VA_ARGS__)
+#define reg_store_e(Tag, ...) Tag::type Tag::_value{__VA_ARGS__}
 
 #define IMPL_REG_E_CHOOSE(...) \
-    IMPL_REG_SWITCH_ARG(     \
+    IMPL_REG_SWITCH_ARG(       \
         __VA_ARGS__, IMPL_REG_E_RW, IMPL_REG_E_R, IMPL_REG_E_S, )
 
 #define reg_e(...) IMPL_REG_E_CHOOSE(__VA_ARGS__)(__VA_ARGS__)

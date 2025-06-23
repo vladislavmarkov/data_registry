@@ -10,22 +10,31 @@ and, optionally, *read* and *write* accessors.
 Step 1 - Declare entries
 
 ```cpp
+#include <data/registry.h>
+
 // static variable as an entry
-_e(tag, type);
+reg_e(speed, unsigned int);
+reg_e(user, user_t);
+
+// static entries must be stored in a traslation unit
+reg_store_e(speed); 
+
+// you can provide init value or the entire list of constructor arguments
+reg_store_s(user, "John", "Doe", "john.doe@jd.com")
 
 // readonly entry accessible via reader
-_e(tag, type, reader);
+reg_e(temperature, float, read_temperature_sensor);
 
 // read-write entry accessible via reader and writer
-_e(tag, type, reader, writer); 
+reg_e(logs, std::string, read_logs, write_logs); 
 ```
 
 Step 2 - Access entries via `reg::get()` and `reg::set()` by tag
 
 ```cpp
 // access function might have 0 to N number of parameters (contexts)
-auto value = reg::get<type>(ctx1, ..., ctxN);
-reg::set<type>(new_value, ctx1, ..., ctxN);
+auto value = reg::get<tag>(ctx1, ..., ctxN);
+reg::set<tag>(new_value, ctx1, ..., ctxN);
 ```
 
 ## Features
@@ -56,12 +65,12 @@ Example:
 
 ```cpp
 // .h
-_e(speed, unsigned short);
+reg_e(speed, unsigned short);
 ```
 
 ```cpp
 // .cpp
-_store_e(speed, unsigned short);
+reg_store_e(speed, unsigned short);
 ```
 
 ```cpp
@@ -94,7 +103,7 @@ Example:
 
 ```cpp
 // .h
-_e(speed, uint16_t, get_speed);
+reg_e(speed, uint16_t, get_speed);
 ```
 
 ```cpp
@@ -148,7 +157,7 @@ void set_temperature(float temp, std::shared_mutex& mx)
     set_pref_temperature(temp);
 }
 
-_e(temperature, float, get_temperature, set_temperature);
+reg_e(temperature, float, get_temperature, set_temperature);
 ```
 
 ```cpp
@@ -191,7 +200,7 @@ float get_room_temperature(
     unsigned int appartment_no,
     room_t room);
 
-_e(temperature, float, get_room_temperature);
+reg_e(temperature, float, get_room_temperature);
 ```
 
 ```cpp
