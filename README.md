@@ -18,22 +18,31 @@ More detailed documentation is here: [Documentation](https://vladislavmarkov.git
 Step 1 - Declare entries
 
 ```cpp
+#include <data/registry.h>
+
 // static variable as an entry
-_e(tag, type);
+reg_e(speed, unsigned int);
+reg_e(user, user_t);
+
+// static entries must be stored in a traslation unit
+reg_store_e(speed); 
+
+// you can provide init value or the entire list of constructor arguments
+reg_store_s(user, "John", "Doe", "john.doe@jd.com");
 
 // readonly entry accessible via reader
-_e(tag, type, reader);
+reg_e(temperature, float, read_temperature_sensor);
 
 // read-write entry accessible via reader and writer
-_e(tag, type, reader, writer); 
+reg_e(logs, std::string, read_logs, write_logs); 
 ```
 
 Step 2 - Access entries via `reg::get()` and `reg::set()` by tag
 
 ```cpp
 // access function might have 0 to N number of parameters (contexts)
-auto value = reg::get<type>(ctx1, ..., ctxN);
-reg::set<type>(new_value, ctx1, ..., ctxN);
+auto value = reg::get<tag>(ctx1, ..., ctxN);
+reg::set<tag>(new_value, ctx1, ..., ctxN);
 ```
 
 ## Features
