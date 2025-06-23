@@ -50,7 +50,7 @@ using modify_type
 
 } // namespace reg
 
-#define IMPL_REG_E_S(Tag, Type)                                                \
+#define IMPL_REG_E_S(Tag, Type)                                        \
     struct Tag                                                         \
     {                                                                  \
         using type = Type;                                             \
@@ -69,7 +69,7 @@ using modify_type
         static type _value;                                            \
     }
 
-#define IMPL_REG_E_R(Tag, Type, Reader)                                             \
+#define IMPL_REG_E_R(Tag, Type, Reader)                                     \
     struct Tag                                                              \
     {                                                                       \
         using type = Type;                                                  \
@@ -86,7 +86,7 @@ using modify_type
         }                                                                   \
     }
 
-#define IMPL_REG_E_RW(Tag, Type, Reader, Writer)                                    \
+#define IMPL_REG_E_RW(Tag, Type, Reader, Writer)                            \
     struct Tag                                                              \
     {                                                                       \
         using type = Type;                                                  \
@@ -105,13 +105,23 @@ using modify_type
     }
 
 // store static
-#define reg_store_e(Tag, Type) \
+#define IMPL_STORE_E(Tag) \
     Tag::type Tag::_value {}
 
-#define IMPL_REG_SWITCH_ARG(tag, arg1, arg2, arg3, arg4, ...) arg4
+#define IMPL_STORE_E_I(Tag, InitValue) \
+    Tag::type Tag::_value { InitValue }
 
-#define IMPL_REG_CHOOSE(...) IMPL_REG_SWITCH_ARG(__VA_ARGS__, IMPL_REG_E_RW, IMPL_REG_E_R, IMPL_REG_E_S, )
+#define IMPL_REG_SWITCH_ARG(Tag, Arg1, Arg2, Arg3, Arg4, ...) Arg4
 
-#define reg_e(...) IMPL_REG_CHOOSE(__VA_ARGS__)(__VA_ARGS__)
+#define IMPL_REG_STORE_E_CHOOSE(...) \
+        IMPL_REG_SWITCH_ARG(__VA_ARGS__, DUMMY, DUMMY, IMPL_STORE_E_I, IMPL_STORE_E, )
+
+#define reg_store_e(...) IMPL_REG_STORE_E_CHOOSE(__VA_ARGS__)(__VA_ARGS__)
+
+#define IMPL_REG_E_CHOOSE(...) \
+    IMPL_REG_SWITCH_ARG(     \
+        __VA_ARGS__, IMPL_REG_E_RW, IMPL_REG_E_R, IMPL_REG_E_S, )
+
+#define reg_e(...) IMPL_REG_E_CHOOSE(__VA_ARGS__)(__VA_ARGS__)
 
 #endif // REG_DATA_REGISTRY_H

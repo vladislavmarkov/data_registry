@@ -44,16 +44,16 @@ reg_e(long_long_int_t, long long int);
 reg_e(unsigned_long_long_int_t, unsigned long long int);
 
 // storing them
-reg_store_e(signed_char_t, signed char);
-reg_store_e(unsigned_char_t, unsigned char);
-reg_store_e(short_int_t, short int);
-reg_store_e(unsigned_short_int_t, unsigned short int);
-reg_store_e(int_t, int);
-reg_store_e(unsigned_int_t, unsigned int);
-reg_store_e(long_int_t, long int);
-reg_store_e(unsigned_long_int_t, unsigned long int);
-reg_store_e(long_long_int_t, long long int);
-reg_store_e(unsigned_long_long_int_t, unsigned long long int);
+reg_store_e(signed_char_t);
+reg_store_e(unsigned_char_t);
+reg_store_e(short_int_t);
+reg_store_e(unsigned_short_int_t);
+reg_store_e(int_t);
+reg_store_e(unsigned_int_t);
+reg_store_e(long_int_t);
+reg_store_e(unsigned_long_int_t);
+reg_store_e(long_long_int_t);
+reg_store_e(unsigned_long_long_int_t);
 
 auto get_crfundamental() -> uint32_t const&
 {
@@ -190,4 +190,29 @@ TEST_CASE("r/w + ctx | callable")
     CHECK(reg::get<rw_ctx_callable>(42) == char{});
     reg::set<rw_ctx_callable>('z', 42);
     CHECK(reg::get<rw_ctx_callable>(42) == 'z');
+}
+
+/*
+ * Requirement:
+ *
+ * reg_store_e() should support initialization value / constructor call
+ */
+
+class non_default_constructible
+{
+    int _i;
+
+public:
+    explicit non_default_constructible(int init_value) : _i(init_value) {}
+
+    auto get() const -> int { return _i; }
+};
+
+reg_e(initialization_required, non_default_constructible);
+
+reg_store_e(initialization_required, 42);
+
+TEST_CASE("reg_store_e() with initialization value")
+{
+    CHECK(reg::get<initialization_required>().get() == 42);
 }

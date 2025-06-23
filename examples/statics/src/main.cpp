@@ -26,9 +26,9 @@ reg_e(location, geo::vec2d_t);
  * Storing statics in the same translation unit is not necessary
  * but it's done here for sake of having short example.
  */
-reg_store_e(number, unsigned short);
-reg_store_e(text, std::string);
-reg_store_e(location, geo::vec2d_t);
+reg_store_e(number);
+reg_store_e(text);
+reg_store_e(location);
 
 auto main() -> int
 {
