@@ -70,16 +70,24 @@ reg_e(speed, unsigned short);
 
 ```cpp
 // .cpp
-reg_store_e(speed, unsigned short);
+/*
+ * Here we store static variable associated with "speed"-tag in current
+ * translation unit and (optionally) initialize with the value of 30.
+ * If we don't specify the second argument, then the static value will
+ * be default-constructed.
+ */
+reg_store_e(speed, 30);
 ```
 
 ```cpp
 // usage
 void override_speed()
 {
+    std::cout << "initial speed is " << reg::get<speed>() << '\n';
+
     reg::set<speed>(60U);
 
-    std::cout << "current speed is " << reg::get<speed>() << '\n';
+    std::cout << "speed is set to " << reg::get<speed>() << '\n';
 }
 ```
 
