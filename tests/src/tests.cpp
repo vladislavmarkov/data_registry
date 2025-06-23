@@ -1,9 +1,12 @@
 #include "data/registry.h"
 
+#include <tuple>
+
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 
 DOCTEST_MAKE_STD_HEADERS_CLEAN_FROM_WARNINGS_ON_WALL_BEGIN
+#include <string_view>
 #include <type_traits>
 DOCTEST_MAKE_STD_HEADERS_CLEAN_FROM_WARNINGS_ON_WALL_END
 
@@ -203,20 +206,43 @@ class non_default_constructible
     int _i;
     char _c;
     float _f;
+    string _str;
+    int _k;
+    int _l;
+    int _m;
 
 public:
-    explicit non_default_constructible(int init_int, char init_char, float init_float) : _i(init_int), _c(init_char), _f(init_float) {}
+    explicit non_default_constructible(
+        int init_int,
+        char init_char,
+        float init_float,
+        char const* str,
+        int k,
+        int l,
+        int m)
+    : _i(init_int)
+    , _c(init_char)
+    , _f(init_float)
+    , _str(str)
+    , _k(k)
+    , _l(l)
+    , _m(m)
+    {}
 
-    auto get_int() const -> int { return _i; }
-    auto get_char() const -> char { return _c; }
-    auto get_float() const -> float { return _f; }
+    auto get() const -> tuple<int, char, float, string, int, int, int>
+    {
+        return make_tuple(_i, _c, _f, _str, _k, _l, _m);
+    }
 };
 
 reg_e(initialization_required, non_default_constructible);
 
-reg_store_e(initialization_required, 42, 'z', 36.6F);
+reg_store_e(
+    initialization_required, 42, 'z', 36.6F, "Hi there!", 123, 234, 345);
 
 TEST_CASE("reg_store_e() with initialization value")
 {
-    CHECK(reg::get<initialization_required>().get_int() == 42);
+    CHECK(
+        reg::get<initialization_required>().get()
+        == make_tuple(42, 'z', 36.6F, string("Hi there!"), 123, 234, 345));
 }
