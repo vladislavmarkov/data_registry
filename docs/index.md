@@ -20,7 +20,7 @@ reg_e(user, user_t);
 reg_store_e(speed); 
 
 // you can provide init value or the entire list of constructor arguments
-reg_store_s(user, "John", "Doe", "john.doe@jd.com");
+reg_store_e(user, "John", "Doe", "john.doe@jd.com");
 
 // readonly entry accessible via reader
 reg_e(temperature, float, read_temperature_sensor);
