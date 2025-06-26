@@ -59,7 +59,7 @@ reg::set<tag>(new_value, ctx1, ..., ctxN);
 ## Static entries
 
 One way to use **data::registry** is to define entries as simple static
-variables by *_e* macro with just two arguments - a tag and a type.
+variables by *reg_e()* macro with just two arguments - a tag and a type.
 
 Example:
 
