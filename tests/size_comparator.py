@@ -21,6 +21,7 @@ import subprocess
 import sys
 from pathlib import Path
 from typing import Dict, List
+from tabulate import tabulate
 
 
 def run_size(path: str | Path) -> Dict[str, str]:
@@ -39,35 +40,28 @@ def run_size(path: str | Path) -> Dict[str, str]:
     return dict(zip(header, values))
 
 
-def print_table(app1: str, app2: str, a: Dict[str, str], b: Dict[str, str]) -> None:
-    keys = [k for k in a.keys() if k != "filename"]  # skip last column
-    # Width calculation per column (header ≤ values ≤ 12 digits is enough)
-    widths = {k: max(len(k), len(a[k]), len(b[k])) for k in keys}
-
-    # Header line
-    header_line = "                      " + "  ".join(k.ljust(widths[k]) for k in keys)
-    print(header_line)
-    # Row for app1
-    print(app1.ljust(20) + "  " + "  ".join(a[k].rjust(widths[k]) for k in keys))
-    # Row for app2
-    print(app2.ljust(20) + "  " + "  ".join(b[k].rjust(widths[k]) for k in keys))
-
-    # Difference in decimal column (dec = text+data+bss)
-    if "dec" in a and "dec" in b:
-        diff = int(a["dec"]) - int(b["dec"])
-        sign = "+" if diff >= 0 else ""
-        print("Δ(dec)".ljust(20) + f"  {sign}{diff}")
-
-
 def main() -> None:
     if len(sys.argv) != 3:
-        sys.exit("Usage: compare_size.py <app1> <app2>")
+        sys.exit("Usage: size_comparator.py <app1> <app2>")
 
     app1, app2 = sys.argv[1:3]
     a = run_size(app1)
     b = run_size(app2)
-    print_table(Path(app1).name, Path(app2).name, a, b)
-
+    headers = list(a.keys())
+    values_a = list(a.values())
+    values_b = list(b.values())
+    headers.pop()
+    values_a.pop()
+    file_b = values_b.pop()
+    headers.insert(0, "")
+    values_a.insert(0, "Plain C++ statics")
+    values_b.insert(0, "data::registry")
+    print(headers)
+    print(values_a)
+    print(values_b)
+    rows = [values_a, values_b]
+    md = tabulate(rows, headers=headers, tablefmt="github", stralign="right", numalign="right")
+    print(md)
 
 if __name__ == "__main__":
     main()

@@ -13,6 +13,19 @@ and, optionally, *read* and *write* accessors.
 
 More detailed documentation is here: [Documentation](https://vladislavmarkov.github.io/data_registry)
 
+## RAM usage
+
+RAM usage is identical to using plain C++ static variables. Below is a
+comparison of two binaries: the first represents a program with 2 000 static
+variables, while the second represents a program with 2 000 entries added
+through **data::registry**.
+Both binaries were compiled with the *-O2* optimization flag.
+
+|                   |   text |   data |   bss |   dec |   hex |
+|-------------------|--------|--------|-------|-------|-------|
+| Plain C++ statics |  61999 |    712 | 21608 | 84319 | 1495f |
+|    data::registry |  61999 |    712 | 21608 | 84319 | 1495f |
+
 ## Quick Start
 
 Step 1 - Declare entries
