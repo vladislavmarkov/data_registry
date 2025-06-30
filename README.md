@@ -28,7 +28,7 @@ Both binaries were compiled with the *-O2* optimization flag.
 
 ## Quick Start
 
-Step 1 - Declare entries
+Step 1 - Declare entries with `reg_e(tag, ...)`
 
 ```cpp
 #include <data/registry.h>
@@ -50,7 +50,7 @@ reg_e(temperature, float, read_temperature_sensor);
 reg_e(logs, std::string, read_logs, write_logs); 
 ```
 
-Step 2 - Access entries via `reg::get()` and `reg::set()` by tag
+Step 2 - Access entries by a *tag* using `reg::get<tag>(...)` and `reg::set<tag>(...)`
 
 ```cpp
 // access function might have 0 to N number of parameters (contexts)
