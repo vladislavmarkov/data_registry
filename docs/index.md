@@ -58,6 +58,11 @@ reg::set<tag>(new_value, ctx1, ..., ctxN);
 - **No lookup tables**  
  Data is accessed at *O(1)*.
 
+- **Zero-cost** *(almost)*  
+ There's no such thing as a truly zero cost abstraction. In case of
+ **data::registry** the only cost of using it is compilation time, as it's API
+ relies on templates and macro extensions.
+
 ## When to use
 
 You might wonder why **data::registry** exists at all. If your project does not
@@ -252,4 +257,21 @@ void check_all_kitchens()
         }
     }
 }
+```
+
+## Functional object accessors
+
+Passing the same context (e.g. global mutex) to accessor functions can be
+annoying. Luckily, it's not necessary - using `std::bind` with
+`std::function` object, for example, or simply passing a lambda with a catch
+section as an accessor function will do.
+
+```cpp
+static std::mutex g_mx{};
+
+// catch mutex by reference
+static auto read_lmbd = [&g_mx]() -> data_type { return read_data(g_mx); };
+
+// read_lmbd will not need a context, as it's bound to it via catch section
+reg_e(tag, data_type, read_lmbd);
 ```
