@@ -43,6 +43,8 @@ reg::set<tag>(new_value, ctx1, ..., ctxN);
  The **data::registry** API never throws exceptions
  internally; any exceptions can originate only from user-provided functions.
 
+- **No heap allocation**
+
 - **Context data support**  
  When needed, callers may pass context objects to
  *reg::get()* or *reg::set()*, provided the corresponding user-provided readers
@@ -55,6 +57,18 @@ reg::set<tag>(new_value, ctx1, ..., ctxN);
 
 - **No lookup tables**  
  Data is accessed at *O(1)*.
+
+## When to use
+
+You might wonder why **data::registry** exists at all. If your project does not
+need to manage multiple singleton-like objects that deliver either *static*
+data or data available through *synchronous* calls, this API is probably not
+the right fit. Conversely, when a project contains many such objects,
+**data::registry** can provide a unified access point, while reducing the
+amount of boilerplate code. If you plan to store only static values, consider
+using a simpler mechanism — or reduce the number of global static variables
+whenever possible — restricting data visibility to only those parts of the
+program that actually use it is generally considered good practice.
 
 ## Static entries
 

@@ -53,7 +53,7 @@ using modify_type
 } // namespace reg
 
 #define IMPL_REG_E_S(Tag, Type)                                        \
-    struct Tag                                                         \
+    struct Tag final                                                   \
     {                                                                  \
         Tag()                              = delete;                   \
         Tag(Tag const&)                    = delete;                   \
@@ -79,7 +79,7 @@ using modify_type
     }
 
 #define IMPL_REG_E_R(Tag, Type, Reader)                                     \
-    struct Tag                                                              \
+    struct Tag final                                                        \
     {                                                                       \
         Tag()                              = delete;                        \
         Tag(Tag const&)                    = delete;                        \
@@ -103,7 +103,7 @@ using modify_type
     }
 
 #define IMPL_REG_E_RW(Tag, Type, Reader, Writer)                            \
-    struct Tag                                                              \
+    struct Tag final                                                        \
     {                                                                       \
         Tag()                              = delete;                        \
         Tag(Tag const&)                    = delete;                        \
