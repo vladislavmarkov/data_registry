@@ -10,7 +10,7 @@ namespace reg
 template<typename Tag, typename... Args>
 inline constexpr auto get(Args&&... args) -> decltype(Tag::get(args...))
 {
-    return Tag::get(args...);
+    return Tag::get(::std::forward<Args>(args)...);
 }
 
 template<typename Tag, typename T, typename... Args>
